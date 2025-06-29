@@ -19,6 +19,13 @@ export default {
           800: '#075985',
           900: '#0c4a6e',
         },
+        kalams: {
+          orange: '#ff6b35',
+          blue: '#004e89',
+          green: '#00a86b',
+          gray: '#f8f9fa',
+        },
+        // Keep kalam for backward compatibility
         kalam: {
           orange: '#ff6b35',
           blue: '#004e89',

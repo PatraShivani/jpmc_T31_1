@@ -308,7 +308,7 @@ const AdminDashboard = () => {
               <div className="neumorphic-card p-4 rounded-lg">
                 <h4 className="font-medium text-gray-900 mb-2">Community Growth</h4>
                 <p className="text-sm text-gray-600 mb-2">
-                  {stats.totalFamilies} families are part of the Kalam community ecosystem.
+                  {stats.totalFamilies} families are part of the KALAMS community ecosystem.
                 </p>
                 <Badge variant="primary">Growing by 12% monthly</Badge>
               </div>

@@ -8,7 +8,11 @@ import Dashboard from './pages/Dashboard';
 import Families from './pages/Families';
 import Students from './pages/Students';
 import Women from './pages/Women';
+import AIChat from './pages/AIChat';
 import AdminDashboard from './pages/AdminDashboard';
+import LandingPage from './pages/LandingPage';
+import Volunteers from './pages/Volunteers';
+import StudentReports from './pages/StudentReports';
 
 function App() {
   return (
@@ -17,7 +21,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
 
-          <Route path="/" element={
+          <Route path="/" element={<LandingPage />} />
+
+          <Route path="/dashboard" element={
             <ProtectedRoute>
               <Layout>
                 <Dashboard />
@@ -45,6 +51,30 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Women />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/ai-chat" element={
+            <ProtectedRoute>
+              <Layout>
+                <AIChat />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/volunteers" element={
+            <ProtectedRoute>
+              <Layout>
+                <Volunteers />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/reports" element={
+            <ProtectedRoute>
+              <Layout>
+                <StudentReports />
               </Layout>
             </ProtectedRoute>
           } />

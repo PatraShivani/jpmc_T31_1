@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Users, 
-  GraduationCap, 
-  Heart, 
-  BarChart3, 
-  X 
+import {
+  Home,
+  Users,
+  GraduationCap,
+  Heart,
+  BarChart3,
+  MessageCircle,
+  FileText,
+  X
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../contexts/AuthContext';
@@ -17,10 +19,13 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: Home, roles: ['admin'] },
+    { name: 'Dashboard', href: '/dashboard', icon: Home, roles: ['admin'] },
     { name: 'Families', href: '/families', icon: Users, roles: ['admin', 'tutor'] },
     { name: 'Students', href: '/students', icon: GraduationCap, roles: ['admin', 'tutor'] },
     { name: 'Women Skills', href: '/women', icon: Heart, roles: ['admin', 'tutor'] },
+    { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin'] },
+    { name: 'Volunteers', href: '/volunteers', icon: Users, roles: ['admin'] },
+    { name: 'AI Assistant', href: '/ai-chat', icon: MessageCircle, roles: ['admin', 'tutor'] },
     { name: 'Analytics', href: '/admin/dashboard', icon: BarChart3, roles: ['admin'] },
   ];
 

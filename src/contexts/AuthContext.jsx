@@ -14,14 +14,14 @@ export const useAuth = () => {
 const mockUsers = [
   {
     id: 1,
-    email: 'admin@todayskalam.org',
+    email: 'admin@kalams.org',
     password: 'admin123',
     name: 'Admin User',
     role: 'admin'
   },
   {
     id: 2,
-    email: 'tutor@todayskalam.org',
+    email: 'tutor@kalams.org',
     password: 'tutor123',
     name: 'Tutor User',
     role: 'tutor'
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for stored user on app load
-    const storedUser = localStorage.getItem('kalam_user');
+    const storedUser = localStorage.getItem('kalams_user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       const { password: _, ...userWithoutPassword } = foundUser;
       
       // Store user in localStorage (in real app, use secure token)
-      localStorage.setItem('kalam_user', JSON.stringify(userWithoutPassword));
+      localStorage.setItem('kalams_user', JSON.stringify(userWithoutPassword));
       setUser(userWithoutPassword);
       
       return { success: true };
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('kalam_user');
+    localStorage.removeItem('kalams_user');
     setUser(null);
   };
 

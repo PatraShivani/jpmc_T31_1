@@ -1,20 +1,23 @@
-# Todays Kalam Foundation Dashboard
+# KALAMS Foundation Dashboard
 
 A comprehensive web-based dashboard system for managing and monitoring the transformation of low-income families through education and skill development programs.
 
 ## 🌟 Features
 
 ### 🔐 Role-Based Authentication
+
 - **Admin**: Full access to all features and analytics
 - **Tutor**: Limited access to family, student, and women management
 
 ### 📊 Dashboard Pages
-1. **Family Dashboard** - Manage Kalam families and track member progress
+
+1. **Family Dashboard** - Manage KALAMS families and track member progress
 2. **Students Management** - Track attendance, test scores, and performance
 3. **Women Skills Empowerment** - Monitor skill training and employment status
 4. **Admin Analytics** - Comprehensive statistics and data export
 
 ### 🎨 Design Features
+
 - **Neumorphism Design**: Soft shadows, rounded corners, and clean layouts
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Tailwind CSS**: Modern utility-first CSS framework
@@ -23,23 +26,27 @@ A comprehensive web-based dashboard system for managing and monitoring the trans
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v20.15.1 or higher)
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
-cd kalam-dashboard
+cd kalams-dashboard
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -49,11 +56,13 @@ npm run dev
 ## 🔑 Demo Credentials
 
 ### Admin Login
-- **Email**: admin@todayskalam.org
+
+- **Email**: admin@kalams.org
 - **Password**: admin123
 
 ### Tutor Login
-- **Email**: tutor@todayskalam.org
+
+- **Email**: tutor@kalams.org
 - **Password**: tutor123
 
 ## 🏗️ Project Structure
@@ -83,6 +92,7 @@ src/
 ## 📱 Responsive Design
 
 The application is fully responsive and optimized for:
+
 - **Desktop**: Full sidebar navigation and expanded layouts
 - **Tablet**: Collapsible sidebar with touch-friendly interactions
 - **Mobile**: Hamburger menu and stacked layouts
@@ -90,24 +100,28 @@ The application is fully responsive and optimized for:
 ## 🎯 Key Features
 
 ### Family Management
-- Add and track Kalam families
+
+- Add and track KALAMS families
 - View family members and their progress
 - Filter by center location
 - Track registration dates and contact information
 
 ### Student Tracking
+
 - Monitor student attendance and performance
 - Record test scores and academic progress
 - Take daily attendance with date tracking
 - Performance indicators and progress visualization
 
 ### Women Empowerment
+
 - Track skill development programs
 - Monitor employment status and job placements
 - Update training progress and completion rates
 - Skills categorization (Tailoring, Bangle Making, Computer Skills, etc.)
 
 ### Admin Analytics
+
 - Comprehensive dashboard with key metrics
 - Center-wise performance breakdown
 - Monthly trend analysis
@@ -133,13 +147,15 @@ The application is fully responsive and optimized for:
 ## 🎨 Design System
 
 ### Colors
+
 - **Primary**: Blue tones for main actions
-- **Kalam Brand**: Orange to blue gradient
+- **KALAMS Brand**: Orange to blue gradient
 - **Success**: Green for positive states
 - **Warning**: Yellow for attention states
 - **Danger**: Red for error states
 
 ### Neumorphism Effects
+
 - **Cards**: `neumorphic-card` class
 - **Buttons**: `neumorphic-button` class
 - **Inputs**: `neumorphic-input` class
@@ -148,6 +164,7 @@ The application is fully responsive and optimized for:
 ## 📊 Data Management
 
 Currently uses mock data for demonstration. In production, integrate with:
+
 - REST APIs for data fetching
 - Authentication service for user management
 - Database for persistent storage
@@ -156,6 +173,7 @@ Currently uses mock data for demonstration. In production, integrate with:
 ## 🌐 Deployment
 
 1. Build the application:
+
 ```bash
 npm run build
 ```

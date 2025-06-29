@@ -24,7 +24,7 @@ export const mockFamilies = [
         age: 38,
         skill: "Tailoring",
         trainingStatus: "completed",
-        jobStatus: "employed"
+        jobStatus: "unemployed"
       }
     ]
   },
@@ -131,12 +131,12 @@ export const mockWomen = [
     name: "Fatima Khan",
     skill: "Tailoring",
     trainingStatus: "completed",
-    jobStatus: "employed",
+    jobStatus: "unemployed",
     family: "The Khan Family",
     age: 38,
     center: "Mehdipatnam Center",
     completionDate: "2024-05-15",
-    employer: "Local Boutique"
+    employer: ""
   },
   {
     id: 4,

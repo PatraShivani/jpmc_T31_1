@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { Heart, Briefcase, TrendingUp, Filter, Edit } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, Briefcase, TrendingUp, Filter, Edit, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
+import { useAuth } from '../contexts/AuthContext';
+import { useWomen } from '../hooks/useFirebase';
 import { mockWomen, centers, skills } from '../data/mockData';
 
 const Women = () => {
-  const [women, setWomen] = useState(mockWomen);
+  const { user } = useAuth();
+  const { women, loading, error, addWoman, updateWoman } = useWomen();
   const [selectedCenter, setSelectedCenter] = useState('All Centers');
   const [selectedSkill, setSelectedSkill] = useState('All Skills');
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedWoman, setSelectedWoman] = useState(null);
   const [updateData, setUpdateData] = useState({
     trainingStatus: '',
@@ -20,12 +24,28 @@ const Women = () => {
     employer: '',
     progress: ''
   });
+  const [newWomanData, setNewWomanData] = useState({
+    name: '',
+    age: '',
+    skill: '',
+    center: '',
+    family: '',
+    contact: '',
+    trainingStatus: 'started',
+    jobStatus: 'unemployed'
+  });
 
   const filteredWomen = women.filter(woman => {
     const centerMatch = selectedCenter === 'All Centers' || woman.center === selectedCenter;
     const skillMatch = selectedSkill === 'All Skills' || woman.skill === selectedSkill;
     return centerMatch && skillMatch;
   });
+
+  // Function to reset women data (for testing/development)
+  const resetWomenData = () => {
+    localStorage.removeItem('kalams_women_data');
+    window.location.reload();
+  };
 
   const getTrainingStatusBadge = (status) => {
     switch (status) {
@@ -64,21 +84,61 @@ const Women = () => {
     setIsUpdateModalOpen(true);
   };
 
-  const submitUpdate = (e) => {
+  const submitUpdate = async (e) => {
     e.preventDefault();
-    const updatedWomen = women.map(woman => 
-      woman.id === selectedWoman.id 
-        ? { 
-            ...woman, 
-            trainingStatus: updateData.trainingStatus,
-            jobStatus: updateData.jobStatus,
-            employer: updateData.employer,
-            progress: parseInt(updateData.progress) || woman.progress
-          }
-        : woman
-    );
-    setWomen(updatedWomen);
-    setIsUpdateModalOpen(false);
+
+    try {
+      const updatedData = {
+        trainingStatus: updateData.trainingStatus,
+        jobStatus: updateData.jobStatus,
+        employer: updateData.employer,
+        progress: parseInt(updateData.progress) || selectedWoman.progress
+      };
+
+      await updateWoman(selectedWoman.id, updatedData);
+      setIsUpdateModalOpen(false);
+
+      // Show success message
+      alert(`✅ Status updated successfully in Firebase!\n\nWoman: ${selectedWoman.name}\nTraining: ${updateData.trainingStatus}\nJob Status: ${updateData.jobStatus}`);
+    } catch (error) {
+      alert(`❌ Error updating status: ${error.message}`);
+    }
+  };
+
+  // Add new woman function (admin only)
+  const handleAddWoman = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addWoman(newWomanData);
+      setNewWomanData({
+        name: '',
+        age: '',
+        skill: '',
+        center: '',
+        family: '',
+        contact: '',
+        trainingStatus: 'started',
+        jobStatus: 'unemployed'
+      });
+      setIsAddModalOpen(false);
+
+      alert(`✅ Woman added successfully to Firebase!\n\nName: ${newWomanData.name}\nSkill: ${newWomanData.skill}\nCenter: ${newWomanData.center}`);
+    } catch (error) {
+      alert(`❌ Error adding woman: ${error.message}`);
+    }
+  };
+
+  // Delete woman function (admin only)
+  const handleDeleteWoman = async (woman) => {
+    if (window.confirm(`Are you sure you want to delete ${woman.name}? This action cannot be undone.`)) {
+      try {
+        // Note: We need to add delete function to the hook
+        alert('Delete functionality will be implemented with Firebase delete service.');
+      } catch (error) {
+        alert(`❌ Error deleting woman: ${error.message}`);
+      }
+    }
   };
 
   const stats = {
@@ -88,6 +148,30 @@ const Women = () => {
     inProgress: women.filter(w => w.trainingStatus === 'in-progress').length
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kalams-blue mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading women data from Firebase...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-64">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading women data: {error}</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -95,6 +179,25 @@ const Women = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Women Skills Empowerment</h1>
           <p className="text-gray-600">Track women's skill development and employment progress</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={resetWomenData}
+            className="text-xs"
+          >
+            Reset Data
+          </Button>
+          {user?.role === 'admin' && (
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              variant="kalam"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Woman
+            </Button>
+          )}
         </div>
       </div>
 
@@ -191,13 +294,25 @@ const Women = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="text-lg">{woman.name}</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleUpdateStatus(woman)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleUpdateStatus(woman)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    {user?.role === 'admin' && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteWoman(woman)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -372,6 +487,157 @@ const Women = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Add Woman Modal (Admin Only) */}
+      {user?.role === 'admin' && (
+        <Modal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          title="Add New Woman"
+        >
+          <form onSubmit={handleAddWoman} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name *
+                </label>
+                <Input
+                  type="text"
+                  value={newWomanData.name}
+                  onChange={(e) => setNewWomanData({...newWomanData, name: e.target.value})}
+                  placeholder="Enter woman's name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Age *
+                </label>
+                <Input
+                  type="number"
+                  value={newWomanData.age}
+                  onChange={(e) => setNewWomanData({...newWomanData, age: e.target.value})}
+                  placeholder="Enter age"
+                  min="18"
+                  max="65"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Skill *
+                </label>
+                <Select
+                  value={newWomanData.skill}
+                  onChange={(e) => setNewWomanData({...newWomanData, skill: e.target.value})}
+                  required
+                >
+                  <option value="">Select Skill</option>
+                  <option value="Tailoring">Tailoring</option>
+                  <option value="Computer Skills">Computer Skills</option>
+                  <option value="Bangle Making">Bangle Making</option>
+                  <option value="Handicrafts">Handicrafts</option>
+                  <option value="Cooking">Cooking</option>
+                  <option value="Beauty & Wellness">Beauty & Wellness</option>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Center *
+                </label>
+                <Select
+                  value={newWomanData.center}
+                  onChange={(e) => setNewWomanData({...newWomanData, center: e.target.value})}
+                  required
+                >
+                  <option value="">Select Center</option>
+                  <option value="Mehdipatnam Center">Mehdipatnam Center</option>
+                  <option value="Santosh Nagar Center">Santosh Nagar Center</option>
+                  <option value="Charminar Center">Charminar Center</option>
+                  <option value="Secunderabad Center">Secunderabad Center</option>
+                  <option value="Kukatpally Center">Kukatpally Center</option>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Family Name
+                </label>
+                <Input
+                  type="text"
+                  value={newWomanData.family}
+                  onChange={(e) => setNewWomanData({...newWomanData, family: e.target.value})}
+                  placeholder="Enter family name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Contact Number *
+                </label>
+                <Input
+                  type="tel"
+                  value={newWomanData.contact}
+                  onChange={(e) => setNewWomanData({...newWomanData, contact: e.target.value})}
+                  placeholder="Enter contact number"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Training Status
+                </label>
+                <Select
+                  value={newWomanData.trainingStatus}
+                  onChange={(e) => setNewWomanData({...newWomanData, trainingStatus: e.target.value})}
+                >
+                  <option value="started">Started</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Job Status
+                </label>
+                <Select
+                  value={newWomanData.jobStatus}
+                  onChange={(e) => setNewWomanData({...newWomanData, jobStatus: e.target.value})}
+                >
+                  <option value="unemployed">Unemployed</option>
+                  <option value="employed">Employed</option>
+                  <option value="self-employed">Self Employed</option>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button type="submit" variant="kalam" className="flex-1">
+                Add Woman
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsAddModalOpen(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 };

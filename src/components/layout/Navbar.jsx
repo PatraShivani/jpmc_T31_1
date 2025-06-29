@@ -26,12 +26,12 @@ const Navbar = ({ onMenuToggle }) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/dashboard" className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-kalam-orange to-kalam-blue rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">TK</span>
+              <span className="text-white font-bold text-lg">KS</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Todays Kalam</h1>
+              <h1 className="text-xl font-bold text-gray-900">Kalam</h1>
               <p className="text-xs text-gray-600">Foundation Dashboard</p>
             </div>
           </Link>
